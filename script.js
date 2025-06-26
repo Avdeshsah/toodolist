@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const taskPriority = document.getElementById("taskPriority");
   const addBtn = document.getElementById("addBtn");
   const taskList = document.getElementById("taskList");
+  const clearAllBtn = document.getElementById("clearAllBtn");
 
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   renderTasks();
@@ -20,6 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
       taskDate.value = "";
       taskPriority.value = "Low";
     }
+  });
+
+  clearAllBtn.addEventListener("click", () => {
+    tasks = [];
+    updateTasks();
   });
 
   function renderTasks() {
@@ -105,5 +111,31 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
     renderTasks();
+  }
+
+  const suggestions = [
+    "Take a short walk for fresh air!",
+    "Organize your workspace.",
+    "Drink a glass of water.",
+    "Review your top priorities.",
+    "Take a 5-minute stretch break.",
+    "Check your calendar for upcoming events.",
+    "Send a thank you message to someone.",
+    "Declutter your email inbox."
+  ];
+
+  const suggestionText = document.getElementById('suggestionText');
+  const newSuggestionBtn = document.getElementById('newSuggestionBtn');
+
+  if (newSuggestionBtn) {
+    newSuggestionBtn.addEventListener('click', () => {
+      let current = suggestionText.textContent;
+      let filtered = suggestions.filter(s => s !== current);
+      let next = filtered[Math.floor(Math.random() * filtered.length)];
+      suggestionText.textContent = next;
+      // Add the suggestion as a new task
+      tasks.push({ text: next, date: "", priority: "Low", completed: false });
+      updateTasks();
+    });
   }
 });
